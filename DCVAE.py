@@ -2,11 +2,9 @@ import torch
 import torch.nn as nn
 import math
 
-ngf = 64
-nz = 300
-nc = 3
+
 class DCVAE(nn.Module):
-    def __init__(self, imageSize):
+    def __init__(self, imageSize, ngf, nz, nc):
         super(DCVAE, self).__init__()
         self.nz = nz
         n = math.log2(imageSize)
@@ -50,8 +48,8 @@ class DCVAE(nn.Module):
 
         self.decoder.add_module('ouput-conv', nn.ConvTranspose2d(ngf, nc, 4, 2,
                                                                  1, bias=True))
-        # self.decoder.add_module('output-tanh', nn.Tanh())
-        self.decoder.add_module('output-tanh', nn.Sigmoid())
+        self.decoder.add_module('output-tanh', nn.Tanh())
+        # self.decoder.add_module('output-sigmoid', nn.Sigmoid())
 
         # weight init
         for m in self.modules():
