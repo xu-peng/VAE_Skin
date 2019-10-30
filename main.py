@@ -16,7 +16,7 @@ parser.add_argument('--data', metavar='DIR',
                     help='path to dataset')
 parser.add_argument('--batch-size', type=int, default=32, metavar='N',
                     help='input batch size for training (default: 32)')
-parser.add_argument('--epochs', type=int, default=10, metavar='N',
+parser.add_argument('--epochs', type=int, default=40, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--image-size', type=int, default=128, metavar='N',
                     help='image-size (default: 128)')
@@ -28,7 +28,7 @@ parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
 parser.add_argument('--runs', type=int, default=1, metavar='S',
                     help='time of runs(default: 1)')
-parser.add_argument('--lr', '--learning-rate', default=1e-4, type=float,
+parser.add_argument('--lr', '--learning-rate', default=2e-4, type=float,
                     metavar='LR', help='initial learning rate', dest='lr')
 
 args = parser.parse_args()
@@ -46,7 +46,7 @@ ngf = 64
 nz = 300
 nc = 3
 
-traindir = os.path.join(args.data, 'nevus')
+traindir = os.path.join(args.data, 'train/nevus')
 
 normalize = transforms.Normalize(mean=(0.5, 0.5, 0.5),
                                  std=(0.5, 0.5, 0.5))
@@ -92,7 +92,7 @@ def train(epoch):
         optimizer.zero_grad()
         recon_batch, mu, logvar = model(data)
         BCE, KLD = loss_function(recon_batch, data, mu, logvar)
-        loss = BCE + 0.01 * KLD
+        loss = BCE + KLD
         loss.backward()
         train_loss += loss.item()
         optimizer.step()
